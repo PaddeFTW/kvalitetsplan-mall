@@ -63,4 +63,17 @@ Använd shadcn/ui för knappar, input och card.
 3. Den öppnas i webbläsaren
 4. Prova att fylla i och spara (sparas i webbläsaren)
 
+---
+
+## 5. GitHub (klart)
+
+All kod är pushad hit:
+https://github.com/PaddeFTW/kvalitetsplan-mall
+
+---
+
+## 6. Vercel (klart)
+
+Se filen **VERCEL-INSTRUKTIONER.md** för steg-för-steg hur du lanserar appen på internet.
+
 Det är allt. Enkelt och klart.
