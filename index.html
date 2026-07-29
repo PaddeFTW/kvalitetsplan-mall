@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kvalitetsplan Mall – Quality Works</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0EA5E9',
+            secondary: '#10B981',
+            soft: '#F8FAFC',
+            card: '#FFFFFF',
+            text: '#1F2937',
+            muted: '#6B7280'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; }
+    .card { box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .check-item:hover { background: #F0F9FF; }
+  </style>
+</head>
+<body class="bg-soft text-text min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">Q</div>
+        <span class="font-semibold text-lg">Kvalitetsplan</span>
+      </div>
+      <div class="flex gap-3 text-sm">
+        <button onclick="showPage('dashboard')" class="px-3 py-1.5 rounded-lg hover:bg-gray-100">Dashboard</button>
+        <button onclick="showPage('plan')" class="px-3 py-1.5 rounded-lg hover:bg-gray-100">Min plan</button>
+        <button onclick="showPage('export')" class="px-3 py-1.5 rounded-lg bg-primary text-white">PDF</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Page -->
+  <div id="page-dashboard" class="max-w-5xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-semibold mb-2">Dina kvalitetsplaner</h1>
+    <p class="text-muted mb-8">Här ser du alla planer du har sparat.</p>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="card bg-white rounded-2xl p-6 border border-gray-100 cursor-pointer hover:border-primary" onclick="showPage('plan')">
+        <div class="flex justify-between items-start mb-3">
+          <h2 class="font-medium text-lg">Nybyggnation Storgatan 12</h2>
+          <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Pågående</span>
+        </div>
+        <p class="text-sm text-muted mb-4">Startad 2026-06-15 · 8 av 12 checklistor klara</p>
+        <div class="w-full bg-gray-100 rounded-full h-2">
+          <div class="bg-secondary h-2 rounded-full" style="width: 67%"></div>
+        </div>
+      </div>
+
+      <div class="card bg-white rounded-2xl p-6 border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-primary" onclick="showPage('plan')">
+        <div class="text-center">
+          <div class="text-3xl mb-2">+</div>
+          <p class="text-muted">Skapa ny plan</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Page -->
+  <div id="page-plan" class="max-w-5xl mx-auto px-4 py-8 hidden">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-semibold">Kvalitetsplan</h1>
+        <p class="text-muted">Fyll i stegen nedan. Allt sparas automatiskt.</p>
+      </div>
+      <button onclick="savePlan()" class="px-5 py-2.5 bg-primary text-white rounded-xl font-medium">Spara</button>
+    </div>
+
+    <!-- Project info -->
+    <section class="card bg-white rounded-2xl p-6 mb-6 border border-gray-100">
+      <h2 class="text-xl font-medium mb-4">1. Projektinformation</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-muted mb-1">Projektnamn</label>
+          <input type="text" id="projektnamn" class="w-full border border-gray-200 rounded-xl px-4 py-2.5" placeholder="T.ex. Nybyggnation Storgatan 12" value="Nybyggnation Storgatan 12">
+        </div>
+        <div>
+          <label class="block text-sm text-muted mb-1">Adress</label>
+          <input type="text" id="adress" class="w-full border border-gray-200 rounded-xl px-4 py-2.5" placeholder="Gatuadress" value="Storgatan 12, 281 31 Hässleholm">
+        </div>
+        <div>
+          <label class="block text-sm text-muted mb-1">Startdatum</label>
+          <input type="date" id="startdatum" class="w-full border border-gray-200 rounded-xl px-4 py-2.5" value="2026-06-15">
+        </div>
+        <div>
+          <label class="block text-sm text-muted mb-1">Entreprenadform</label>
+          <select id="entreprenad" class="w-full border border-gray-200 rounded-xl px-4 py-2.5">
+            <option>Totalentreprenad</option>
+            <option>Utförandeentreprenad</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Egenkontroll -->
+    <section class="card bg-white rounded-2xl p-6 mb-6 border border-gray-100">
+      <h2 class="text-xl font-medium mb-4">2. Egenkontroll (klicka för att markera)</h2>
+      <p class="text-sm text-muted mb-4">1 = Godkänt · 2 = Ej godkänt · 3 = Ej kontrollerat</p>
+      
+      <div class="space-y-2" id="egenkontroll-lista">
+        <!-- items added by JS -->
+      </div>
+    </section>
+
+    <!-- ÄTA -->
+    <section class="card bg-white rounded-2xl p-6 mb-6 border border-gray-100">
+      <h2 class="text-xl font-medium mb-4">3. ÄTA-rapport</h2>
+      <div class="grid gap-4">
+        <div>
+          <label class="block text-sm text-muted mb-1">Beskrivning av ÄTA</label>
+          <textarea id="ata-beskrivning" rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-2.5" placeholder="Vad ska ändras eller läggas till?"></textarea>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-muted mb-1">Orsak</label>
+            <input type="text" id="ata-orsak" class="w-full border border-gray-200 rounded-xl px-4 py-2.5" placeholder="Varför behövs ändringen?">
+          </div>
+          <div>
+            <label class="block text-sm text-muted mb-1">Pris (kr)</label>
+            <input type="number" id="ata-pris" class="w-full border border-gray-200 rounded-xl px-4 py-2.5" placeholder="0">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Avvikelse -->
+    <section class="card bg-white rounded-2xl p-6 mb-6 border border-gray-100">
+      <h2 class="text-xl font-medium mb-4">4. Avvikelserapport</h2>
+      <div class="grid gap-4">
+        <div>
+          <label class="block text-sm text-muted mb-1">Var hände det?</label>
+          <input type="text" id="avvikelse-plats" class="w-full border border-gray-200 rounded-xl px-4 py-2.5">
+        </div>
+        <div>
+          <label class="block text-sm text-muted mb-1">Beskriv händelsen</label>
+          <textarea id="avvikelse-beskrivning" rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-2.5"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm text-muted mb-1">Åtgärd som gjordes</label>
+          <input type="text" id="avvikelse-atgard" class="w-full border border-gray-200 rounded-xl px-4 py-2.5">
+        </div>
+      </div>
+    </section>
+
+    <div class="flex gap-3">
+      <button onclick="savePlan()" class="px-6 py-3 bg-primary text-white rounded-xl font-medium">Spara plan</button>
+      <button onclick="showPage('export')" class="px-6 py-3 border border-gray-300 rounded-xl">Gå till PDF</button>
+    </div>
+  </div>
+
+  <!-- Export Page -->
+  <div id="page-export" class="max-w-5xl mx-auto px-4 py-8 hidden">
+    <h1 class="text-3xl font-semibold mb-2">Ladda ner PDF</h1>
+    <p class="text-muted mb-8">Här kan du ladda ner din färdiga kvalitetsplan.</p>
+
+    <div class="card bg-white rounded-2xl p-8 border border-gray-100 text-center">
+      <div class="text-5xl mb-4">📄</div>
+      <h2 class="text-xl font-medium mb-2">Kvalitetsplan – Nybyggnation Storgatan 12</h2>
+      <p class="text-muted mb-6">Senast sparad: idag</p>
+      <button onclick="alert('PDF-export skulle starta här (i riktig app med jsPDF eller server)')" class="px-8 py-3 bg-primary text-white rounded-xl font-medium">
+        Ladda ner PDF
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Egenkontroll items from original document
+    const checks = [
+      "Projektpärmar, distribution och innehåll ok?",
+      "Har internt byggstartsmöte hållits?",
+      "Har besiktning av arbetsområde gjorts?",
+      "Gällande handlingar finns på arbetsplatsen?",
+      "Görs inköp i rätt tid och av rätt person?",
+      "Har tidsplanen följts?",
+      "Egenkontroller utförda enligt plan?",
+      "Mätutrustning kontrollerad?",
+      "Personalliggare ifylld?",
+      "Avvikelser rapporterade?"
+    ];
+
+    const lista = document.getElementById('egenkontroll-lista');
+    checks.forEach((text, i) => {
+      const div = document.createElement('div');
+      div.className = 'check-item flex items-center gap-3 p-3 rounded-xl border border-gray-100';
+      div.innerHTML = `
+        <span class="text-sm flex-1">${text}</span>
+        <div class="flex gap-1">
+          <button onclick="setCheck(this,1)" class="w-8 h-8 rounded-lg border text-sm hover:bg-green-100">1</button>
+          <button onclick="setCheck(this,2)" class="w-8 h-8 rounded-lg border text-sm hover:bg-red-100">2</button>
+          <button onclick="setCheck(this,3)" class="w-8 h-8 rounded-lg border text-sm hover:bg-gray-100">3</button>
+        </div>
+      `;
+      lista.appendChild(div);
+    });
+
+    function setCheck(btn, val) {
+      const parent = btn.parentElement;
+      parent.querySelectorAll('button').forEach(b => {
+        b.classList.remove('bg-green-500','bg-red-500','bg-gray-400','text-white');
+      });
+      if (val === 1) btn.classList.add('bg-green-500','text-white');
+      if (val === 2) btn.classList.add('bg-red-500','text-white');
+      if (val === 3) btn.classList.add('bg-gray-400','text-white');
+    }
+
+    function showPage(name) {
+      document.getElementById('page-dashboard').classList.add('hidden');
+      document.getElementById('page-plan').classList.add('hidden');
+      document.getElementById('page-export').classList.add('hidden');
+      document.getElementById('page-' + name).classList.remove('hidden');
+    }
+
+    function savePlan() {
+      const data = {
+        projektnamn: document.getElementById('projektnamn').value,
+        adress: document.getElementById('adress').value,
+        startdatum: document.getElementById('startdatum').value,
+        entreprenad: document.getElementById('entreprenad').value,
+        ata: {
+          beskrivning: document.getElementById('ata-beskrivning').value,
+          orsak: document.getElementById('ata-orsak').value,
+          pris: document.getElementById('ata-pris').value
+        },
+        avvikelse: {
+          plats: document.getElementById('avvikelse-plats').value,
+          beskrivning: document.getElementById('avvikelse-beskrivning').value,
+          atgard: document.getElementById('avvikelse-atgard').value
+        }
+      };
+      localStorage.setItem('kvalitetsplan', JSON.stringify(data));
+      alert('Planen är sparad! (I riktig app sparas den i Supabase)');
+    }
+
+    // Load saved if exists
+    const saved = localStorage.getItem('kvalitetsplan');
+    if (saved) {
+      const d = JSON.parse(saved);
+      if (d.projektnamn) document.getElementById('projektnamn').value = d.projektnamn;
+      if (d.adress) document.getElementById('adress').value = d.adress;
+    }
+  </script>
+</body>
+</html>

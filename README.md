@@ -1,2 +1,12 @@
-# kvalitetsplan-mall
-Enkel digital kvalitetsplan-mall for byggprojekt - Quality Works Small
+# Kvalitetsplan Mall
+
+Enkel digital kvalitetsplan för byggprojekt.
+
+## Demo
+Öppna `index.html` i webbläsaren.
+
+## GitHub
+https://github.com/PaddeFTW/kvalitetsplan-mall
+
+## Nästa steg
+Se INSTRUKTIONER.md
