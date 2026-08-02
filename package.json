@@ -1,0 +1,22 @@
+{
+  "name": "kvalitetsplan-design-system",
+  "version": "1.0.0",
+  "description": "Design systems for Quality Works / Kvalitetsplan – Laser Dark, Laser Light, Business & Neutral Minimal",
+  "main": "index.js",
+  "keywords": [
+    "design-system",
+    "kvalitetsplan",
+    "quality-works",
+    "tailwind",
+    "css-variables",
+    "laser",
+    "business"
+  ],
+  "author": "Patrik Kürtök / KvalitetsGruppen",
+  "license": "MIT",
+  "files": [
+    "design-systems/**/*",
+    "index.html",
+    "README.md"
+  ]
+}
